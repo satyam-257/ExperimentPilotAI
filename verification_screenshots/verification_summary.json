@@ -1,0 +1,17 @@
+{
+  "all_passed": true,
+  "step_results": {
+    "Step 1: Overview Page & Hero": "PASS",
+    "Step 2: Run Facts Inspection": "PASS",
+    "Step 3: Model Comparison (Compatible)": "PASS",
+    "Step 4: Behavior Explorer Filters": "PASS",
+    "Step 5: Generic Tabular Cleanliness": "PASS",
+    "Step 6: AI Insights & Synchronization": "PASS",
+    "Step 7: Incompatibility Warning": "PASS",
+    "Step 8: Promote Hypothesis": "PASS",
+    "Step 9: Hypothesis Drawer Collapse/Expand": "PASS",
+    "Step 10: Experiment Ingestion & UI Update": "PASS"
+  },
+  "error_logs": [],
+  "failed_requests": []
+}

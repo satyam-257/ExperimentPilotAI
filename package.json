@@ -1,0 +1,14 @@
+{
+  "name": "experimentpilot",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ExperimentPilot: General-Purpose ML Experimentation & Model-Behavior Analysis",
+  "scripts": {
+    "dev": "npm --prefix frontend run dev",
+    "build": "npm --prefix frontend run build",
+    "lint": "npm --prefix frontend run lint",
+    "frontend": "npm --prefix frontend run dev",
+    "backend": "cd backend && python -m uvicorn main:app --host 127.0.0.1 --port 8000 --reload",
+    "test:backend": "cd backend && python test_backend.py"
+  }
+}
