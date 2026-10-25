@@ -1,7 +1,13 @@
 import os
+import sys
 import uuid
 from datetime import datetime
 from typing import List, Dict, Any, Optional
+
+# Ensure backend directory is in sys.path regardless of invocation directory
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+if CURRENT_DIR not in sys.path:
+    sys.path.insert(0, CURRENT_DIR)
 
 from fastapi import FastAPI, HTTPException, Query, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
@@ -30,10 +36,17 @@ app = FastAPI(
     redirect_slashes=False
 )
 
-# Enable CORS for cross-origin requests
+# Enable CORS for cross-origin requests (configurable via CORS_ORIGINS)
+cors_origins_env = os.environ.get("CORS_ORIGINS", "").strip()
+if cors_origins_env and cors_origins_env != "*":
+    origins = [orig.strip() for orig in cors_origins_env.split(",") if orig.strip()]
+else:
+    origins = ["*"]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
+    allow_origin_regex=os.environ.get("CORS_ORIGIN_REGEX", r"https://.*\.vercel\.app|http://localhost:\d+|http://127\.0\.0\.1:\d+"),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -48,7 +61,7 @@ def ensure_initialized():
     except Exception as e:
         print(f"Database bootstrap note: {e}")
 
-# Run immediate initialization for serverless environments
+# Run immediate initialization for serverless / container environments
 ensure_initialized()
 
 @app.on_event("startup")
@@ -56,6 +69,9 @@ def startup_event():
     ensure_initialized()
 
 # --- Health Check ---
+@app.get("/")
+@app.get("/health")
+@app.get("/api")
 @app.get("/api/health")
 def health_check():
     return {"status": "ok", "app": "ExperimentPilot", "version": "1.0.0"}
@@ -415,3 +431,10 @@ def export_experiment(exp_id: str):
 def reseed_benchmarks():
     seed_database(force=True)
     return {"status": "success", "message": "Synthetic fixtures and benchmark data restored."}
+
+if __name__ == "__main__":
+    import uvicorn
+    port = int(os.environ.get("PORT", 8000))
+    host = os.environ.get("HOST", "0.0.0.0")
+    uvicorn.run("main:app", host=host, port=port, reload=False)
+

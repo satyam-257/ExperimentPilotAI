@@ -6,7 +6,8 @@ import {
   Hypothesis
 } from './types';
 
-const BASE_URL = (import.meta.env.VITE_API_URL || '/api').replace(/\/$/, '');
+const rawApiUrl = (import.meta.env.VITE_API_URL || '/api').trim().replace(/\/+$/, '');
+const BASE_URL = rawApiUrl.endsWith('/api') ? rawApiUrl : `${rawApiUrl}/api`;
 
 export async function fetchExperiments(): Promise<Experiment[]> {
   const res = await fetch(`${BASE_URL}/experiments`);

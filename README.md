@@ -269,35 +269,47 @@ python test_backend.py
 
 ---
 
-## Deployment on Vercel
+---
 
-ExperimentPilot is pre-configured for one-click deployment on [Vercel](https://vercel.com) as a full-stack application (React + Vite static frontend with Python FastAPI Serverless Functions).
+## Production Deployment (Vercel + Render)
 
-### Method 1: Deploy via Vercel Web Dashboard (Recommended)
+ExperimentPilot is architected for decoupled, production-grade cloud deployment:
+- **Frontend (SPA):** [Vercel](https://vercel.com)
+- **Backend (API):** [Render](https://render.com)
+- **Source Control:** GitHub (`satyam-257/ExperimentPilotAI`)
 
-1. Push your repository to GitHub:
-   ```bash
-   git add .
-   git commit -m "Configure Vercel deployment"
-   git push origin main
-   ```
-2. Navigate to [vercel.com/new](https://vercel.com/new) and log in.
-3. Import the repository: `satyam-257/ExperimentPilotAI`.
-4. Keep the default settings (Vercel automatically detects `vercel.json`, `outputDirectory: frontend/dist`, and Python runtime for `api/`).
-5. (Optional) Set environment variables:
-   - `GEMINI_API_KEY`: *(Optional)* For Google Gemini insights synthesis.
-   - `OPENAI_API_KEY`: *(Optional)* For OpenAI insights synthesis.
-6. Click **Deploy**.
+### Step 1: Deploy Backend to Render
 
-### Method 2: Deploy via Vercel CLI
+1. Log in to your [Render Dashboard](https://dashboard.render.com).
+2. Click **New +** -> **Web Service** (or use **Blueprint** pointing to `render.yaml`).
+3. Connect your GitHub repository: `https://github.com/satyam-257/ExperimentPilotAI`.
+4. Configure the Web Service settings:
+   - **Name:** `experimentpilot-backend`
+   - **Root Directory:** `backend`
+   - **Runtime:** `Python`
+   - **Build Command:** `pip install -r requirements.txt`
+   - **Start Command:** `uvicorn main:app --host 0.0.0.0 --port $PORT`
+   - **Health Check Path:** `/health`
+5. Configure Environment Variables:
+   - `CORS_ORIGINS`: `*` *(or your Vercel URL once deployed)*
+   - `GEMINI_API_KEY`: *(Optional, for Google Gemini synthesis)*
+   - `OPENAI_API_KEY`: *(Optional, for OpenAI synthesis)*
+   - `DB_PATH`: *(Optional, if using a Render Persistent Disk at e.g. `/var/data/experimentpilot.db`)*
+6. Click **Deploy Web Service** and copy your backend URL (e.g., `https://experimentpilot-backend.onrender.com`).
 
-```bash
-# 1. Install or run Vercel CLI
-npx vercel
+### Step 2: Deploy Frontend to Vercel
 
-# 2. Deploy to production
-npx vercel --prod
-```
+1. Log in to [Vercel](https://vercel.com/new).
+2. Click **Import** next to your `ExperimentPilotAI` repository.
+3. Configure the Project Settings:
+   - **Framework Preset:** `Vite`
+   - **Root Directory:** `frontend`
+   - **Build Command:** `npm run build`
+   - **Output Directory:** `dist`
+4. Add the Environment Variable:
+   - **Name:** `VITE_API_URL`
+   - **Value:** Your Render backend URL (e.g., `https://experimentpilot-backend.onrender.com`)
+5. Click **Deploy**.
 
 ---
 
