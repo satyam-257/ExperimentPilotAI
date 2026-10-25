@@ -26,10 +26,11 @@ from seed_data import seed_database
 app = FastAPI(
     title="ExperimentPilot API",
     description="Backend service for ML experimentation, model comparison, and behavioral inspection.",
-    version="1.0.0"
+    version="1.0.0",
+    redirect_slashes=False
 )
 
-# Enable CORS for local development
+# Enable CORS for cross-origin requests
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -38,12 +39,21 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+def ensure_initialized():
+    try:
+        init_db()
+        exps = db_list_experiments()
+        if not exps:
+            seed_database()
+    except Exception as e:
+        print(f"Database bootstrap note: {e}")
+
+# Run immediate initialization for serverless environments
+ensure_initialized()
+
 @app.on_event("startup")
 def startup_event():
-    init_db()
-    exps = db_list_experiments()
-    if not exps:
-        seed_database()
+    ensure_initialized()
 
 # --- Health Check ---
 @app.get("/api/health")

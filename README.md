@@ -269,6 +269,38 @@ python test_backend.py
 
 ---
 
+## Deployment on Vercel
+
+ExperimentPilot is pre-configured for one-click deployment on [Vercel](https://vercel.com) as a full-stack application (React + Vite static frontend with Python FastAPI Serverless Functions).
+
+### Method 1: Deploy via Vercel Web Dashboard (Recommended)
+
+1. Push your repository to GitHub:
+   ```bash
+   git add .
+   git commit -m "Configure Vercel deployment"
+   git push origin main
+   ```
+2. Navigate to [vercel.com/new](https://vercel.com/new) and log in.
+3. Import the repository: `satyam-257/ExperimentPilotAI`.
+4. Keep the default settings (Vercel automatically detects `vercel.json`, `outputDirectory: frontend/dist`, and Python runtime for `api/`).
+5. (Optional) Set environment variables:
+   - `GEMINI_API_KEY`: *(Optional)* For Google Gemini insights synthesis.
+   - `OPENAI_API_KEY`: *(Optional)* For OpenAI insights synthesis.
+6. Click **Deploy**.
+
+### Method 2: Deploy via Vercel CLI
+
+```bash
+# 1. Install or run Vercel CLI
+npx vercel
+
+# 2. Deploy to production
+npx vercel --prod
+```
+
+---
+
 ## Known Limitations
 
 1. **Row & Payload Limits**: Standard file uploads are capped at 5 MB and 10,000 samples to guarantee sub-second browser rendering without pagination lags.

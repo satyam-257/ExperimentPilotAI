@@ -3,8 +3,16 @@ import sqlite3
 import json
 from typing import List, Dict, Any, Optional
 
-DB_DIR = os.path.join(os.path.dirname(__file__), "data")
-DB_PATH = os.path.join(DB_DIR, "experimentpilot.db")
+# Support serverless read-only filesystems (e.g. Vercel, AWS Lambda)
+IS_SERVERLESS = bool(os.environ.get("VERCEL") or os.environ.get("AWS_LAMBDA_FUNCTION_NAME"))
+
+if IS_SERVERLESS or not os.access(os.path.dirname(__file__), os.W_OK):
+    import tempfile
+    DB_DIR = os.path.join(tempfile.gettempdir(), "experimentpilot_data")
+    DB_PATH = os.path.join(DB_DIR, "experimentpilot.db")
+else:
+    DB_DIR = os.path.join(os.path.dirname(__file__), "data")
+    DB_PATH = os.path.join(DB_DIR, "experimentpilot.db")
 
 def init_db():
     os.makedirs(DB_DIR, exist_ok=True)
