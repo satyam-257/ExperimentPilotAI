@@ -285,3 +285,14 @@ python test_backend.py
 1. **Row & Payload Limits**: Standard file uploads are capped at 5 MB and 10,000 samples to guarantee sub-second browser rendering without pagination lags.
 2. **Volumetric Slices**: The current slice scrubber supports pre-computed 2D axial representations. Future milestones will include client-side DICOM/NIfTI parsing via WebGL.
 3. **LLM Hallucination Guard**: LLM synthesis is strictly bounded by deterministic evidence extracts passed in the system prompt; clinical diagnoses and unsupported causal claims are strictly suppressed.
+
+
+## Vercel-Only Hackathon Deployment
+
+Vercel can serve both the Vite frontend and FastAPI API from this repository:
+
+1. Import `satyam-257/ExperimentPilotAI` into Vercel and keep the project root at the repository root.
+2. Keep the build settings from `vercel.json`; do not set the project root to `frontend`.
+3. Deploy. The frontend is served as a static SPA and `/api` requests are routed to the FastAPI function in `api/index.py`.
+
+The serverless backend writes SQLite data to the function’s temporary directory. This is suitable for a short-lived demo, but data is not durable and may reset between function instances or deployments. Use the Vercel + Render setup above when persistent storage is required.
