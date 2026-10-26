@@ -6,6 +6,20 @@ from typing import List, Dict, Any, Optional
 DB_DIR = os.path.join(os.path.dirname(__file__), "data")
 DB_PATH = os.path.join(DB_DIR, "experimentpilot.db")
 
+CUSTOM_DB_PATH = os.environ.get("DATABASE_PATH") or os.environ.get("DB_PATH")
+IS_SERVERLESS = bool(os.environ.get("VERCEL") or os.environ.get("AWS_LAMBDA_FUNCTION_NAME"))
+
+if CUSTOM_DB_PATH:
+    DB_PATH = os.path.abspath(CUSTOM_DB_PATH)
+    DB_DIR = os.path.dirname(DB_PATH) or "."
+elif IS_SERVERLESS or not os.access(os.path.dirname(__file__), os.W_OK):
+    import tempfile
+    DB_DIR = os.path.join(tempfile.gettempdir(), "experimentpilot_data")
+    DB_PATH = os.path.join(DB_DIR, "experimentpilot.db")
+else:
+    DB_DIR = os.path.join(os.path.dirname(__file__), "data")
+    DB_PATH = os.path.join(DB_DIR, "experimentpilot.db")
+
 def init_db():
     os.makedirs(DB_DIR, exist_ok=True)
     conn = sqlite3.connect(DB_PATH)
