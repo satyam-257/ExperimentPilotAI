@@ -665,12 +665,13 @@ SAFETY & SCIENTIFIC INTEGRITY RULES:
 """
             if provider == "openai":
                 base_url = os.environ.get("OPENAI_BASE_URL", "https://api.openai.com/v1")
+                model = os.environ.get("OPENAI_MODEL", "gpt-4o-mini")
                 async with httpx.AsyncClient(timeout=20.0) as client:
                     resp = await client.post(
                         f"{base_url}/chat/completions",
                         headers={"Authorization": f"Bearer {api_key}"},
                         json={
-                            "model": "gpt-4o-mini",
+                            "model": model,
                             "messages": [{"role": "user", "content": prompt}],
                             "response_format": {"type": "json_object"}
                         }
@@ -679,7 +680,7 @@ SAFETY & SCIENTIFIC INTEGRITY RULES:
                         content = resp.json()["choices"][0]["message"]["content"]
                         parsed = json.loads(content)
                         return {
-                            "provider_used": f"OpenAI ({resp.json().get('model', 'gpt-4o-mini')})",
+                            "provider_used": f"OpenAI-compatible ({resp.json().get('model', model)})",
                             "summary": parsed.get("summary", det_result["summary"]),
                             "findings": parsed.get("findings", det_result["findings"]),
                             "recommendations": parsed.get("recommendations", det_result["recommendations"]),

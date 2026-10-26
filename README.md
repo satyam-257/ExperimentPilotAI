@@ -174,6 +174,17 @@ npm run test:backend
 .\start_servers.bat
 ```
 
+## Deploying to Vercel and Render
+
+The repository includes a Vercel configuration for the Vite frontend and a Render Blueprint for the FastAPI backend.
+
+1. In Render, create a new Blueprint from this repository and apply `render.yaml`. The free web service can sleep when idle, and its filesystem is ephemeral; SQLite changes may be lost when the service restarts or redeploys. Do not use this free configuration for data that must be retained.
+2. In Vercel, import the repository. The root `vercel.json` selects the frontend build and static output. Add `VITE_API_BASE_URL` as an environment variable, set to the Render service URL ending in `/api` (for example, `https://experimentpilot-api.onrender.com/api`), then deploy.
+3. In the Render service environment, set `FRONTEND_ORIGINS` to the exact Vercel site origin (for example, `https://experimentpilot.vercel.app`). Separate multiple origins with commas. Redeploy the backend after changing environment variables.
+4. Verify the backend at `https://<render-service>.onrender.com/api/health` and then open the Vercel site.
+
+The insights screen supports deterministic analysis, Google Gemini, and OpenAI-compatible APIs. Ollama can be used only when it is reachable by the backend over HTTPS and exposes an OpenAI-compatible API. Configure `OPENAI_BASE_URL` to that endpoint (ending in `/v1`), `OPENAI_MODEL` to a model served by Ollama, and `OPENAI_API_KEY` to a value accepted by the endpoint. Do not expose a home Ollama server publicly without an authenticated, secured tunnel. The free Render service may sleep, so requests to it can take longer after idle periods.
+
 
 ## Ingestion Formats
 

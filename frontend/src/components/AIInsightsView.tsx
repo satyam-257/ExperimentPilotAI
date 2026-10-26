@@ -113,7 +113,7 @@ export const AIInsightsView: React.FC<AIInsightsViewProps> = ({
                 setShowKeyInput(true);
               }}
             >
-              <Brain size={14} style={{ display: 'inline', marginRight: 4 }} /> OpenAI
+              <Brain size={14} style={{ display: 'inline', marginRight: 4 }} /> OpenAI-compatible
             </button>
           </div>
 
@@ -279,7 +279,7 @@ export const AIInsightsView: React.FC<AIInsightsViewProps> = ({
             <Key size={18} color="#06b6d4" />
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: '0.82rem', fontWeight: 600, color: '#fff' }}>
-                {provider === 'gemini' ? 'Google Gemini' : 'OpenAI'} API Key (Optional Client Override)
+                {provider === 'gemini' ? 'Google Gemini' : 'OpenAI-compatible'} API Key (Optional Client Override)
               </div>
               <div style={{ fontSize: '0.74rem', color: '#94a3b8' }}>
                 Secrets are preferred from server environment variables ({provider === 'gemini' ? 'GEMINI_API_KEY' : 'OPENAI_API_KEY'}). Enter here only for session testing.
